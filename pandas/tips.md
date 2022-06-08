@@ -23,5 +23,24 @@ df = df.add_prefix('Oo_')
 df = df.add_suffix('_oO')
 ```
 
+# 4. Reverse row records
+```python
+df = df.loc[::-1]
+# reset index after reversing the row records:
+df = df.reset_index(drop=True)
+```
+
+# 5. Reverse column order
+```python
+df = drinks.loc[:, ::-1]
+```
+
+# 6. Select columns by data type
+```python
+df.select_dtypes(include='number').head()
+df.select_dtypes(include=['number', 'object', 'category', 'datetime']).head()
+df.select_dtypes(exclude='number').head()
+```
+
 
 
