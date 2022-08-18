@@ -42,5 +42,10 @@ df.select_dtypes(include=['number', 'object', 'category', 'datetime']).head()
 df.select_dtypes(exclude='number').head()
 ```
 
+# 7. Convert strings to numbers
+```python
+df = df.apply(pd.to_numeric, errors='coerce').fillna(0)
+df
+```
 
 
