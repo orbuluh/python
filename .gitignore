@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+.google_token_files
+genki_3rd_audio
+google-cloud-sdk
+jp_vocab
+jp_vocab_verb
