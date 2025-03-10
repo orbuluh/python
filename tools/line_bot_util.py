@@ -1,13 +1,10 @@
-from api_util import get_api_key
+import threading
 
-from flask import Flask, request, abort
+from api_util import get_api_key
+from flask import Flask, abort, request
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-
-import requests
-import os
-import threading
 
 
 class LineBotApp:
@@ -21,8 +18,7 @@ class LineBotApp:
         # then you go to line developer console to change the webhook address
         # to https://balbla.jp.ngrok.io/callback, then when you talk to your
         # line bot, it should create the TextMessage event!
-        self.app.add_url_rule("/callback", "callback",
-                              self.callback, methods=["POST"])
+        self.app.add_url_rule("/callback", "callback", self.callback, methods=["POST"])
 
         # webhook trigger callback trigger handler
         @self.handler.add(MessageEvent, message=TextMessage)
@@ -33,10 +29,8 @@ class LineBotApp:
             print(f"User ID: {user_id}")
             message_text = event.message.text
             reply_text = f"Auto-reply: {message_text}"
-            self.line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text=reply_text)
-            )
+            self.line_bot_api.reply_message(event.reply_token, TextSendMessage(text=reply_text))
+
         self.start_push_timer()
 
     # the callback trigger by webhook
@@ -52,10 +46,9 @@ class LineBotApp:
 
     def send_push_message(self, message_text):
         for user_id in self.user_ids:
-            self.line_bot_api.push_message(
-                user_id, TextSendMessage(text=message_text))
+            self.line_bot_api.push_message(user_id, TextSendMessage(text=message_text))
 
-    def run(self, host='0.0.0.0', port=8000):
+    def run(self, host="0.0.0.0", port=8000):
         self.app.run(host=host, port=port)
         self.send_push_message("yooo")
 
@@ -63,18 +56,13 @@ class LineBotApp:
         def push_message_periodically():
             while True:
                 for user_id in self.user_ids:
-                    self.line_bot_api.push_message(
-                        user_id,
-                        TextSendMessage(text="yo")
-                    )
+                    self.line_bot_api.push_message(user_id, TextSendMessage(text="yo"))
                 threading.Event().wait(5)
 
-        push_thread = threading.Thread(
-            target=push_message_periodically, daemon=True)
+        push_thread = threading.Thread(target=push_message_periodically, daemon=True)
         push_thread.start()
 
 
 if __name__ == "__main__":
-    line_bot_app = LineBotApp(get_api_key("LINE_API_ACCESS_TOKEN"),
-                              get_api_key("LINE_CHANNEL_SECRET"))
+    line_bot_app = LineBotApp(get_api_key("LINE_API_ACCESS_TOKEN"), get_api_key("LINE_CHANNEL_SECRET"))
     line_bot_app.run()

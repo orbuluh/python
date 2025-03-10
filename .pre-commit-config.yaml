@@ -1,0 +1,12 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.2.2
+    hooks:
+      - id: ruff  # Linting (checks for errors, style issues, etc.)
+        args: ["--select", "I001", "--fix"]
+      - id: ruff-format  # Auto-formatting (like black)
+
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.6.1
+    hooks:
+      - id: nbstripout
